@@ -1,30 +1,40 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract NFTMint is ERC721, Ownable {
+contract Glimmer is ERC721URIStorage, Ownable, ReentrancyGuard {
     using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
+    Counters.Counter private _tokenIdCounter;
 
-    uint256 public constant MINT_PRICE = 0.1 ether;
-    uint256 public constant MAX_SUPPLY = 1000;
+    string public constant TOKEN_URI = "https://ipfs.filebase.io/ipfs/QmQwV4umGApbKUta37UUTUHVLAW8oPW2LsVLwArwR2zavD";
+    bool public paused = false;
 
-    constructor() ERC721("MyNFT", "MNFT") {}
+    constructor(address initialOwner) 
+        ERC721("Glimmer", "GL") 
+        Ownable(initialOwner) 
+    {}
 
-    function mint() public payable {
-        require(msg.value >= MINT_PRICE, "Insufficient payment");
-        require(_tokenIds.current() < MAX_SUPPLY, "Max supply reached");
-
-        _tokenIds.increment();
-        uint256 newTokenId = _tokenIds.current();
-        _safeMint(msg.sender, newTokenId);
+    modifier whenNotPaused() {
+        require(!paused, "Minting is paused");
+        _;
     }
 
-    function withdraw() public onlyOwner {
-        uint256 balance = address(this).balance;
-        payable(owner()).transfer(balance);
+    function safeMint(address to) public whenNotPaused nonReentrant {
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, TOKEN_URI);
+    }
+
+    function totalSupply() public view returns (uint256) {
+        return _tokenIdCounter.current();
+    }
+
+    function setPaused(bool _paused) public onlyOwner {
+        paused = _paused;
     }
 }
