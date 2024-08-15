@@ -4,19 +4,17 @@ import styled from 'styled-components';
 import historyButtonImage from '../assets/history-button.png';
 
 const StyledLink = styled(Link)`
-  padding: 15px 120px;
-  font-size: 30px;
-  width: 350px; // Установите ширину, соответствующую вашему изображению
-  height: 80px; // Установите высоту, соответствующую вашему изображению
+  display: block;
+  width: 350px;
+  height: 80px;
   background-image: url(${historyButtonImage});
-  color: red;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   text-decoration: none;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #FFFFFF;
-  }
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.3s;
 `;
 
 const HistoryButton = () => {

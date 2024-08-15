@@ -20,32 +20,36 @@ const ContentContainer = styled.div`
   max-width: 800px;
   width: 90%;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Press Start 2P', cursive;
 `;
 
 const Title = styled.h1`
   color: #333;
   text-align: center;
   margin-bottom: 20px;
+  font-size: 24px;
 `;
 
 const Content = styled.p`
   color: #666;
-  line-height: 1.6;
+  line-height: 2;
   text-align: justify;
+  font-size: 12px;
 `;
 
 const BackLink = styled(Link)`
   display: inline-block;
   margin-top: 20px;
   padding: 10px 20px;
-  background-color: #008CBA;
-  color: white;
+  background-color: #f3f4f6;
+  color: red;
   text-decoration: none;
   border-radius: 5px;
   transition: background-color 0.3s;
+  font-size: 12px;
 
   &:hover {
-    background-color: #007B9A;
+    background-color: #e5e7eb;
   }
 `;
 
