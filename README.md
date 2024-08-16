@@ -30,7 +30,7 @@ npm start
 ## Links
 
 - [WebPage](https://storyofglimmer.xyz/)
-- [Github](https://github.com/storyofglimmer)
+- [Github](https://github.com/adovrodion/storyofglimmer)
 - [Twitter](https://x.com/storyofglimmer)
 
 ## Contacts
