@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useAccount, useContractWrite, usePrepareContractWrite, useNetwork, useWaitForTransaction } from 'wagmi';
+import { 
+  useAccount, 
+  useContractWrite, 
+  usePrepareContractWrite, 
+  useNetwork, 
+  useWaitForTransaction, 
+  useContractRead 
+} from 'wagmi';
 import { NFT_CONTRACT_ADDRESS, NFT_CONTRACT_ABI } from '../utils/contractInteraction';
 import mintButtonImage from '../assets/mint-button.png';
 import { base } from 'wagmi/chains';
@@ -109,6 +116,7 @@ const CloseBtn = styled.button`
 `;
 
 const MintButton = () => {
+  const MAX_SUPPLY = 5000;
   const [isMinting, setIsMinting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -119,12 +127,21 @@ const MintButton = () => {
 
   const isBaseNetwork = chain?.id === base.id;
 
+  const { data: currentSupply } = useContractRead({
+    address: NFT_CONTRACT_ADDRESS,
+    abi: NFT_CONTRACT_ABI,
+    functionName: 'totalSupply',
+    watch: true,
+  });
+
+  const isSoldOut = (currentSupply ?? 0) >= MAX_SUPPLY;
+
   const { config } = usePrepareContractWrite({
     address: NFT_CONTRACT_ADDRESS,
     abi: NFT_CONTRACT_ABI,
     functionName: 'safeMint',
     args: [address],
-    enabled: isBaseNetwork,
+    enabled: isBaseNetwork && !isSoldOut,
   });
 
   const { write: mint, isLoading, isSuccess: isMintSuccess, data } = useContractWrite(config);
@@ -167,6 +184,11 @@ const MintButton = () => {
       return;
     }
   
+    if (isSoldOut) {
+      alert('Sold out');
+      return;
+    }
+  
     if (!mint) {
       console.error('Mint function is not defined');
       alert('Error: mint function is not defined');
@@ -205,9 +227,9 @@ const MintButton = () => {
     <>
       <StyledButton 
         onClick={handleMint} 
-        disabled={!isConnected || !isBaseNetwork || isMinting || isLoading}
+        disabled={!isConnected || !isBaseNetwork || isMinting || isLoading || isSoldOut}
       >
-        {!isBaseNetwork ? 'Switch to Base' : (isMinting || isLoading ? 'Minting...' : 'MINT')}
+        {!isBaseNetwork ? 'Switch to Base' : (isSoldOut ? 'Sold Out' : ((isMinting || isLoading) ? 'Minting...' : 'MINT'))}
       </StyledButton>
       <Modal
         isOpen={isModalOpen}
