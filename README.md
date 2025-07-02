@@ -19,6 +19,24 @@ cd storyofglimmer
 npm install
 ```
 
+## Environment variables
+
+Copy `.env.example` to `.env` and fill in your values:
+
+```bash
+cp .env.example .env
+# then edit .env
+```
+
+Required keys:
+
+| Key | Description |
+|-------------------------------|-------------------------------------------|
+| `REACT_APP_CONTRACT_ADDRESS`  | Deployed Glimmer NFT contract address      |
+| `REACT_APP_WALLETCONNECT_PROJECT_ID` | WalletConnect Cloud project-id           |
+
+Without valid values WalletConnect will fail to initialise and the Mint button will call a wrong contract.
+
 ## Start    
 
 Start project.
